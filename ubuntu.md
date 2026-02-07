@@ -61,6 +61,7 @@ Ubuntu桌面应用收集
 + [termius](https://www.termius.com/) Termius is the #1 cross-platform terminal with built-in SSH and Telnet.
 + [docker for debain](https://download.docker.com/linux/debian/dists/stretch/pool/stable/amd64/) debain使用的deb安装包。
 + [kitematic](https://github.com/docker/kitematic/releases) 跨平台的docker GUI工具。
++ [Docker镜像中心搭建](../docker/docker-registry.md) Docker私有镜像仓库搭建完整指南。
 + [jetbrains IDE全家桶](https://www.jetbrains.com/)
   + [Intellij IDEA 配置Subversion插件](http://blog.csdn.net/wo541075754/article/details/46047051)
   + [IntelliJ IDEA设置JVM运行参数](http://blog.csdn.net/sdujava2011/article/details/50086933)

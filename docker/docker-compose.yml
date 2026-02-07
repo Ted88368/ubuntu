@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # Docker Registry 服务
+  registry:
+    image: registry:2
+    container_name: docker-registry
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      # 启用删除功能
+      REGISTRY_STORAGE_DELETE_ENABLED: "true"
+      # 认证配置
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      # HTTPS 配置（如果使用 HTTPS，取消下面两行注释）
+      # REGISTRY_HTTP_TLS_CERTIFICATE: /certs/domain.crt
+      # REGISTRY_HTTP_TLS_KEY: /certs/domain.key
+      # 日志级别
+      REGISTRY_LOG_LEVEL: info
+    volumes:
+      - ./data:/var/lib/registry
+      - ./auth:/auth
+      # 如果使用 HTTPS，取消下面一行注释
+      # - ./certs:/certs
+    networks:
+      - registry-net
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:5000/v2/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Registry Web UI（可选）
+  registry-ui:
+    image: joxit/docker-registry-ui:latest
+    container_name: registry-ui
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - REGISTRY_TITLE=私有 Docker 镜像中心
+      - REGISTRY_URL=http://registry:5000
+      - DELETE_IMAGES=true
+      - SHOW_CONTENT_DIGEST=true
+      - NGINX_PROXY_PASS_URL=http://registry:5000
+      - SINGLE_REGISTRY=true
+      # 如果启用了认证，配置用户名和密码
+      # - REGISTRY_USERNAME=admin
+      # - REGISTRY_PASSWORD=admin123
+    depends_on:
+      - registry
+    networks:
+      - registry-net
+
+networks:
+  registry-net:
+    driver: bridge
